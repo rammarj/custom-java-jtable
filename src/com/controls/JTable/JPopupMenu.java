@@ -16,14 +16,14 @@ import javax.swing.JMenuItem;
 public abstract class JPopupMenu extends javax.swing.JPopupMenu implements ActionListener{
     private static final long serialVersionUID = 8555424897561527441L;
 
-    private  JMenuItem jmn_edit = new JMenuItem("editar");
-    private  JMenuItem jmn_del = new JMenuItem("eliminar");
+    private  JMenuItem editItem = new JMenuItem("edit");
+    private  JMenuItem deleteItem = new JMenuItem("delete");
     
     public JPopupMenu() {
-        add(jmn_edit);
-        add(jmn_del);
-        jmn_del.addActionListener(this);
-        jmn_edit.addActionListener(this);
+        add(editItem);
+        add(deleteItem);
+        deleteItem.addActionListener(this);
+        editItem.addActionListener(this);
     }
 
     public abstract void edit();
@@ -31,9 +31,9 @@ public abstract class JPopupMenu extends javax.swing.JPopupMenu implements Actio
     
     @Override
     public void actionPerformed(ActionEvent e) {
-        if(e.getSource() == this.jmn_edit){
+        if(e.getSource() == this.editItem){
             edit();
-        }else if(e.getSource() == this.jmn_del){
+        }else if(e.getSource() == this.deleteItem){
             delete();
         }
     }

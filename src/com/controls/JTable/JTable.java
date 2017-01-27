@@ -5,7 +5,6 @@
  */
 package com.controls.JTable;
 
-import com.controls.JTable.JTablePanel;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
@@ -49,14 +48,14 @@ public abstract class JTable extends JPanel implements ActionListener, ItemListe
      *  The <code>JTablePanel</code> used by this Component
      *  @see JTablePanel
      */
-    protected JTablePanel tabla;
-    protected JPanel acciones, actions, search;
-    private JComboBox box;
-    private JLabel estadis;
+    protected JTablePanel table;
+    protected JPanel toDoPanel, actionsPanel, searchPanel;
+    private JComboBox searchOptionCombo;
+    private JLabel stadisticsInfo;
     //private JButton btn_refresh;
-    protected JPanel pnl_options;
-    private JCheckBox chbx_seleccionar;
-    private final String seleccionar = "seleccionar todo", deseleccionar = "deseleccionar todo";
+    protected JPanel optionsPanel;
+    private JCheckBox selectCheck;
+    private final String selectString = "select all", deselectString = "deselect";
     /**
      * Build a new <code>JTable</code> object with custom columns and data to show.
      * @param object the data to show in table.
@@ -64,77 +63,77 @@ public abstract class JTable extends JPanel implements ActionListener, ItemListe
      */
     public JTable(Object object[][], String cols[]) {
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
-        tabla = new JTablePanel(object, cols) {
+        table = new JTablePanel(object, cols) {
             private static final long serialVersionUID = 702314805164153195L;
             @Override
-            public void editar() {
+            public void edit() {
                 edit();
             }
             @Override
-            public void borrar() {
+            public void delete() {
                 if(getSelectedRow()==-1){
-                    JOptionPane.showMessageDialog(this, "No seleccionó un registro","Error",JOptionPane.ERROR_MESSAGE);
+                    JOptionPane.showMessageDialog(this, "No row selected","Error",JOptionPane.ERROR_MESSAGE);
                     return;
                 }
-                int showConfirmDialog = JOptionPane.showConfirmDialog(this,
-                    "¿Seguro que quiere eliminar el registro\n con numero de identificacion \""
-                            +getValueAt(getSelectedRow(), 1)+"\"?", "Confirmacion", JOptionPane.YES_NO_CANCEL_OPTION);
-                if (showConfirmDialog == JOptionPane.YES_OPTION) {
+                int result = JOptionPane.showConfirmDialog(this,
+                    "Are you sure deleting \""
+                            +getValueAt(getSelectedRow(), 1)+"\"?", "Confirmation", JOptionPane.YES_NO_CANCEL_OPTION);
+                if (result == JOptionPane.YES_OPTION) {
                         delete();                
                         refreshTable();
                 }
             }
         };
-        //panel de acciones y busqueda
-        acciones = new JPanel(new GridLayout(1, 2));
-        acciones.setMaximumSize(new Dimension(100000, 20));
+        //panel de toDoPanel y busqueda
+        toDoPanel = new JPanel(new GridLayout(1, 2));
+        toDoPanel.setMaximumSize(new Dimension(100000, 20));
         //acciones.setBackground(BACKGROUND_COLOR);
 
-        box = new JComboBox(new String[]{"buscar en: "});
+        searchOptionCombo = new JComboBox(new String[]{"search at: "});
         //box.setFont(DEFAULT_COMBO_FONT);
 
         for (int i = 1; i < cols.length; i++) {
             Object col = cols[i];
-            box.addItem(col);
+            searchOptionCombo.addItem(col);
         }
-        box.addItem("todos los registros");
+        searchOptionCombo.addItem("all rows");
         //panel de opciones 
-        pnl_options = new JPanel(new FlowLayout(FlowLayout.LEFT,5,10));
+        optionsPanel = new JPanel(new FlowLayout(FlowLayout.LEFT,5,10));
         //pnl_options.setBackground(BACKGROUND_COLOR);
 
-        chbx_seleccionar = new JCheckBox(seleccionar);
+        selectCheck = new JCheckBox(selectString);
         //chbx_seleccionar.setFont(DEFAULT_LABEL_FONT);
         //chbx_seleccionar.setBackground(BACKGROUND_COLOR);
-        chbx_seleccionar.addItemListener(this);
+        selectCheck.addItemListener(this);
 
-        pnl_options.add(chbx_seleccionar);
+        optionsPanel.add(selectCheck);
 
-        //panel de estadisticas
-        JPanel estadisticas = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        //panel de stadisticsPanel
+        JPanel stadisticsPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
         //estadisticas.setBackground(BACKGROUND_COLOR);
-        estadisticas.setMaximumSize(new Dimension(100000, 20));
+        stadisticsPanel.setMaximumSize(new Dimension(100000, 20));
 
-        estadis = new JLabel();
+        stadisticsInfo = new JLabel();
         //estadis.setFont(DEFAULT_LABEL_FONT);
-        estadisticas.add(estadis);
+        stadisticsPanel.add(stadisticsInfo);
 
-        //panel de acciones
-        actions = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        //panel de toDoPanel
+        actionsPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
 
-        String[] items = new String[]{"acciones en lote", "borrar"};
+        String[] items = new String[]{"Actions", "delete"};
         accion = new JComboBox<>(items);
         //accion.setFont(DEFAULT_COMBO_FONT);
-        accion_submit = new JButton("aplicar");
-//        btn_refresh = new JButton("actualizar tabla");
+        accion_submit = new JButton("apply");
+//        btn_refresh = new JButton("actualizar table");
 //        btn_refresh.setFont(DEFAULT_BUTTON_FONT);
         
         //accion_submit.setFont(DEFAULT_BUTTON_FONT);
 
-        actions.add(accion);
-        actions.add(accion_submit);
+        actionsPanel.add(accion);
+        actionsPanel.add(accion_submit);
         //actions.add(btn_refresh);
         //panel de busqueda
-        search = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+        searchPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
 
         buscar = new JTextField(10);
         //buscar.setFont(DEFAULT_LABEL_FONT);
@@ -158,16 +157,16 @@ public abstract class JTable extends JPanel implements ActionListener, ItemListe
         //btn_refresh.addActionListener(this);
 
         //search.add(new JLabel(Constants.SEARCH_ICON));
-        search.add(buscar);
-        //search.add(box);
+        searchPanel.add(buscar);
+        //search.add(searchOptionCombo);
         //search.add(buscar_submit);
-        acciones.add(actions);
-        acciones.add(search);
+        toDoPanel.add(actionsPanel);
+        toDoPanel.add(searchPanel);
 
-        add(estadisticas);
-        add(acciones);
-        add(tabla);
-        add(pnl_options);
+        add(stadisticsPanel);
+        add(toDoPanel);
+        add(table);
+        add(optionsPanel);
 
         //setBackgroundColor(BACKGROUND_COLOR);
     }
@@ -176,7 +175,7 @@ public abstract class JTable extends JPanel implements ActionListener, ItemListe
      * @param rowData the data to will be added. The number of elements in the object array must be equals to number of columns in table
      */
     public void addRow(Object rowData[]) {
-        tabla.addRow(rowData);
+        table.addRow(rowData);
     }
     /**
      * Gets the action selected in the Combobox.
@@ -187,10 +186,10 @@ public abstract class JTable extends JPanel implements ActionListener, ItemListe
     }
     /**
      * Gets the searched <code>String</code>
-     * @return The <code>String</code> wrote in search section
+     * @return The <code>String</code> wrote in searchPanel section
      */
     protected String getSelectedSearch() {
-        return (String) box.getSelectedItem();
+        return (String) searchOptionCombo.getSelectedItem();
     }
     /**
      * Method called when a 'click' has ocurred. This method can be overwriten by subclasses 
@@ -199,9 +198,10 @@ public abstract class JTable extends JPanel implements ActionListener, ItemListe
     @Override
     public void actionPerformed(ActionEvent e) {
         /*if (e.getSource() == this.buscar_submit) {
-            search();
+            searchPanel();
         }else 
-            */if (e.getSource() == this.accion_submit) {
+            */
+        if (e.getSource() == this.accion_submit) {
             aplyAction();
         }/*else if(e.getSource() == this.btn_refresh){
             refreshTable();
@@ -213,15 +213,15 @@ public abstract class JTable extends JPanel implements ActionListener, ItemListe
      */
     public Object[] getSelectedValues(int column){
         LinkedList<Object> list = new LinkedList<>();
-        for (int i = 0; i < tabla.getTable().getRowCount(); i++) {
-            if ((boolean) tabla.getTable().getValueAt(i, 0) == true) {
-                list.add(tabla.getTable().getValueAt(i, column));
+        for (int i = 0; i < table.getTable().getRowCount(); i++) {
+            if ((boolean) table.getTable().getValueAt(i, 0) == true) {
+                list.add(table.getTable().getValueAt(i, column));
             }            
         }
         return list.toArray();
     }
     /**
-     * Called when a ´click´ has ocurred in the search button.
+     * Called when a ´click´ has ocurred in the searchPanel button.
      */
     protected abstract void search();
     /**
@@ -230,9 +230,9 @@ public abstract class JTable extends JPanel implements ActionListener, ItemListe
     public abstract void refreshTable();
     
     public void setBackgroundColor(Color c) {
-        search.setBackground(c);
-        acciones.setBackground(c);
-        actions.setBackground(c);
+        searchPanel.setBackground(c);
+        toDoPanel.setBackground(c);
+        actionsPanel.setBackground(c);
     }
     /**
      * Called when the ´aply´ button is clicked. 
@@ -242,25 +242,25 @@ public abstract class JTable extends JPanel implements ActionListener, ItemListe
      * Sets the estadistic label value.
      */
     public void setEstatisticsValue(String s) {
-        estadis.setText(s);
+        stadisticsInfo.setText(s);
     }
     /**
      * Gets the selected row in table.
      * @return The row index.
      */
     public int getSelectedRow() {
-        return tabla.getTable().getSelectedRow();
+        return table.getTable().getSelectedRow();
     }
     /**
      * Returns the cell value at <code>row</code> and <code>column</code>.
      * <p>
      * <b>Note</b>: The column is specified in the table view's display
      *              order, and not in the <code>TableModel</code>'s column
-     *              order.  This is an important distinction because as the
-     *              user rearranges the columns in the table,
-     *              the column at a given index in the view will change.
-     *              Meanwhile the user's actions never affect the model's
-     *              column ordering.
+              order.  This is an important distinction because as the
+              user rearranges the columns in the table,
+              the column at a given index in the view will change.
+              Meanwhile the user's actionsPanel never affect the model's
+              column ordering.
      *
      * @param   row             the row whose value is to be queried
      * @param   column          the column whose value is to be queried
@@ -268,7 +268,7 @@ public abstract class JTable extends JPanel implements ActionListener, ItemListe
      */
     public Object getValueAt(int row, int col) {
         try {
-            return tabla.getTable().getValueAt(row, col);
+            return table.getTable().getValueAt(row, col);
         } catch (Exception e) {
             return new Object();
         }
@@ -278,10 +278,10 @@ public abstract class JTable extends JPanel implements ActionListener, ItemListe
      * @param sel if value is <code>true</code> sets selected all checkboxes, else, deselects all checkboxes.  
      */
     public void setSelectedAllRows(boolean sel) {
-        int rowCount = tabla.getTable().getRowCount();
+        int rowCount = table.getTable().getRowCount();
         for (int i = 0; i < rowCount; i++) {
-            tabla.getTable().setValueAt(sel, i, 0);
-            tabla.getTable().repaint();
+            table.getTable().setValueAt(sel, i, 0);
+            table.getTable().repaint();
         }
     }
     /**
@@ -290,14 +290,14 @@ public abstract class JTable extends JPanel implements ActionListener, ItemListe
      */
     @Override
     public void itemStateChanged(ItemEvent e) {
-        if (e.getSource() == chbx_seleccionar) {
-            setSelectedAllRows(chbx_seleccionar.isSelected());
-            if (chbx_seleccionar.getActionCommand() == seleccionar) {
-                chbx_seleccionar.setText(deseleccionar);
+        if (e.getSource() == selectCheck) {
+            setSelectedAllRows(selectCheck.isSelected());
+            if (selectCheck.getActionCommand() == selectString) {
+                selectCheck.setText(deselectString);
             } else {
-                chbx_seleccionar.setText(seleccionar);
+                selectCheck.setText(selectString);
             }
-            chbx_seleccionar.repaint();
+            selectCheck.repaint();
         }
     }
     /**
@@ -305,7 +305,7 @@ public abstract class JTable extends JPanel implements ActionListener, ItemListe
      * @throws IndexOutOfBoundsException if <code>index</code> value is <= -1 or higher to size of available elements.
      */
     public void removeRow(int index){
-        tabla.removeRow(index);
+        table.removeRow(index);
     }
     /**
      * Returns the number of rows that can be shown in the
@@ -317,7 +317,7 @@ public abstract class JTable extends JPanel implements ActionListener, ItemListe
      * @return the number of rows shown in the <code>JTable</code>
      */
     public int getRowCount(){
-        return tabla.getTable().getRowCount();        
+        return table.getTable().getRowCount();        
     }
     /**
      * Adds a listener to the list that's notified each time a change
@@ -326,7 +326,7 @@ public abstract class JTable extends JPanel implements ActionListener, ItemListe
      * @param   listener  the TableModelListener
      */
     public void addTableListener(TableModelListener listener){
-        tabla.addTableModelListener(listener);
+        table.addTableModelListener(listener);
     }
     /**
      * Adds the specified mouse listener to receive mouse events from
@@ -345,25 +345,25 @@ public abstract class JTable extends JPanel implements ActionListener, ItemListe
      */
     @Override
     public void addMouseListener(MouseListener listener){
-       tabla.addMouseListener(listener);
+       table.addMouseListener(listener);
     }
     /**
      * Removes all rows of table.
      */
     public void removeAllRows(){
-        tabla.removeAllRows();
+        table.removeAllRows();
     }   
     
     public void setColumnSize(int col, int size){
-        tabla.setColumnSize(col, size);
+        table.setColumnSize(col, size);
     }
     
     public void edit(){
-        //not implemented yet
+        //not implemented
     }
     
     public void delete(){
-        //not implemented yet
+        //not implemented 
     }
     
 }

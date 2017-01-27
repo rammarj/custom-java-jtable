@@ -24,25 +24,25 @@ public abstract class JTablePanel extends javax.swing.JPanel{
     private static final long serialVersionUID = 4427765624210639870L;
     private DefaultTableModel defaultTableModel;
     protected JTable table;
-    protected JPopupMenu jpm_menu;
+    protected JPopupMenu tablePopupMenu;
 
     public JTablePanel(Object object[][], String cols[]) {
         
-        jpm_menu = new JPopupMenu() {
+        tablePopupMenu = new JPopupMenu() {
             private static final long serialVersionUID = 1L;
             @Override
             public void edit() {
-                editar();
+                edit();
             }
             @Override
             public void delete() {
-                borrar();
+                delete();
             }
         };
         
         defaultTableModel = new DefaultTableModel(object, cols);        
         table = new JTable(defaultTableModel);
-        table.setComponentPopupMenu(jpm_menu);
+        table.setComponentPopupMenu(tablePopupMenu);
         table.getColumnModel().getColumn(0).setMaxWidth(20);
         table.getColumnModel().getColumn(1).setMaxWidth(60);
         table.getColumnModel().getColumn(1).setMaxWidth(60);
@@ -54,30 +54,28 @@ public abstract class JTablePanel extends javax.swing.JPanel{
         table.setForeground(new java.awt.Color(0, 51, 102));
         table.setShowHorizontalLines(false);
         //table.setFont(DEFAULT_LABEL_FONT);
-        JScrollPane jScrollPane2 = new JScrollPane();
-        javax.swing.Box.Filler filler1 = new javax.swing.Box.Filler(new java.awt.Dimension(0, 0),
+        JScrollPane tableScroll = new JScrollPane();
+        javax.swing.Box.Filler filler = new javax.swing.Box.Filler(new java.awt.Dimension(0, 0),
                 new java.awt.Dimension(0, 0), new java.awt.Dimension(0, 0));
         
         table.setAutoResizeMode(JTable.AUTO_RESIZE_NEXT_COLUMN);
-        jScrollPane2.setViewportView(table);
-        jScrollPane2.setMinimumSize(new Dimension(300, 100));
-        jScrollPane2.setPreferredSize(new Dimension(500, 200));
+        tableScroll.setViewportView(table);
+        tableScroll.setMinimumSize(new Dimension(300, 100));
+        tableScroll.setPreferredSize(new Dimension(500, 200));
 
         GroupLayout layout = new GroupLayout(this);
         setLayout(layout);
-        layout.setHorizontalGroup(
-                layout.createParallelGroup(GroupLayout.Alignment.CENTER)
-                .addComponent(filler1)
+        layout.setHorizontalGroup(layout.createParallelGroup(GroupLayout.Alignment.CENTER)
+                .addComponent(filler)
                 .addGroup(GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addGap(0)
-                        .addComponent(jScrollPane2))
+                        .addComponent(tableScroll))
         );
-        layout.setVerticalGroup(
-                layout.createParallelGroup(GroupLayout.Alignment.CENTER)
+        layout.setVerticalGroup(layout.createParallelGroup(GroupLayout.Alignment.CENTER)
                 .addGroup(layout.createSequentialGroup()
-                        .addComponent(filler1)
+                        .addComponent(filler)
                         .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jScrollPane2)
+                        .addComponent(tableScroll)
                         .addContainerGap())
         );
         //setBackground(BACKGROUND_COLOR);
@@ -121,6 +119,6 @@ public abstract class JTablePanel extends javax.swing.JPanel{
     public void setColumnSize(int col, int size){
         table.getColumnModel().getColumn(col).setMaxWidth(size);
     }
-    public abstract void editar();
-    public abstract void borrar();
+    public abstract void edit();
+    public abstract void delete();
 }

@@ -17,18 +17,18 @@ public class DefaultTableModel extends AbstractTableModel {
 
     private static final long serialVersionUID = -5690946625346692211L;
 
-    private Vector<Vector<Object>> n;
+    private Vector<Vector<Object>> data;
     private String names[] = null;
 
     public DefaultTableModel(Object[][] data, String[] cols) {
         names = cols;
-        this.n = new Vector<Vector<Object>>();
+        this.data = new Vector<Vector<Object>>();
         for (int i = 0; i < data.length; i++) {
             Vector<Object> s = new Vector();
             for (int j = 0; j < data[i].length; j++) {
                 s.add(data[i][j]);
             }
-            this.n.addElement(s);
+            this.data.addElement(s);
         }
     }
 
@@ -39,13 +39,13 @@ public class DefaultTableModel extends AbstractTableModel {
 
     @Override
     public int getRowCount() {
-        return this.n.size();
+        return this.data.size();
     }
 
     @Override
     public Object getValueAt(int row, int col) {
         try {
-            Vector<Object> elementAt = this.n.elementAt(row);
+            Vector<Object> elementAt = this.data.elementAt(row);
             return elementAt.elementAt(col);
         } catch (Exception e) {
         }
@@ -76,19 +76,19 @@ public class DefaultTableModel extends AbstractTableModel {
 
     @Override
     public void setValueAt(Object aValue, int row, int column) {
-        Vector<Object> elementAt = this.n.elementAt(row);
-        elementAt.set(column, aValue);
-        this.n.setElementAt(elementAt, row);
+        Vector<Object> rowData = this.data.elementAt(row);
+        rowData.set(column, aValue);
+        this.data.setElementAt(rowData, row);
         fireTableCellUpdated(row, column);
     }
 
     public void addRow(Vector<Object> rowData) {
-        n.add(rowData);
+        data.add(rowData);
         fireTableDataChanged();
     }
 
     public void removeRow(int row){
-        this.n.removeElementAt(row);      
+        this.data.removeElementAt(row);      
         fireTableRowsDeleted(row, row);
     }    
     
